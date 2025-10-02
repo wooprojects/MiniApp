@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مینی اپ چندکاره</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --border-radius: 12px;
+        }
+
+        .dark-mode {
+            --primary-color: #818cf8;
+            --secondary-color: #a78bfa;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #e2e8f0 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode body {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1e293b 100%);
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .feature-desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .content-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .dark-mode .section-header {
+            border-bottom-color: #334155;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* استایل‌های مخصوص Todo List */
+        .todo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: border 0.3s ease;
+        }
+
+        .dark-mode .todo-input {
+            border-color: #334155;
+        }
+
+        .todo-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .add-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #059669;
+        }
+
+        .todo-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dark-mode .todo-item {
+            border-color: #334155;
+        }
+
+        .todo-item:hover {
+            transform: translateX(-5px);
+        }
+
+        .todo-item.completed {
+            opacity: 0.7;
+            background: #d1fae5;
+        }
+
+        .dark-mode .todo-item.completed {
+            background: #064e3b;
+        }
+
+        .todo-checkbox {
+            margin-left: 10px;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .delete-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        /* استایل‌های مخصوص یادداشت‌ها */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .note-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            min-height: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #f59e0b;
+        }
+
+        .dark-mode .note-card {
+            background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+            border-color: #d97706;
+        }
+
+        .note-card:hover {
+            transform: rotate(-2deg);
+        }
+
+        .note-content {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .add-note-btn {
+            background: var(--warning-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .add-note-btn:hover {
+            background: #d97706;
+        }
+
+        /* استایل‌های مخصوص تبدیل واحد */
+        .converter-group {
+            margin-bottom: 20px;
+        }
+
+        .converter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .converter-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .dark-mode .converter-input {
+            border-color: #334155;
+        }
+
+        .converter-select {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1em;
+        }
+
+        .dark-mode .converter-select {
+            border-color: #334155;
+        }
+
+        .converter-result {
+            background: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* استایل‌های مخصوص محاسبه BMI */
+        .bmi-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .dark-mode .form-input {
+            border-color: #334155;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .bmi-result {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 2px solid var(--primary-color);
+        }
+
+        .bmi-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary-color);
+        }
+
+        .bmi-category {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .bmi-advice {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid #e2e8f0;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .dark-mode .footer {
+            border-top-color: #334155;
+        }
+
+        .footer-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .footer-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* رسپانسیو */
+        @media (max-width: 480px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+                padding-bottom: 70px;
+            }
+            
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .notes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* اسکرول بار */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- صفحه اصلی -->
+        <div id="main-page">
+            <div class="header">
+                <h1>مینی اپ چندکاره</h1>
+                <p>۴ قابلیت کاربردی در یک اپلیکیشن</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" data-feature="todo">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-title">لیست کارها</div>
+                    <div class="feature-desc">مدیریت کارهای روزانه و پیگیری پیشرفت</div>
+                </div>
+                <div class="feature-card" data-feature="notes">
+                    <div class="feature-icon">📒</div>
+                    <div class="feature-title">یادداشت‌ها</div>
+                    <div class="feature-desc">ثبت سریع یادداشت و ایده‌ها</div>
+                </div>
+                <div class="feature-card" data-feature="converter">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">تبدیل واحد</div>
+                    <div class="feature-desc">تبدیل واحدهای مختلف به یکدیگر</div>
+                </div>
+                <div class="feature-card" data-feature="bmi">
+                    <div class="feature-icon">💪</div>
+                    <div class="feature-title">محاسبه BMI</div>
+                    <div class="feature-desc">محاسبه شاخص توده بدنی و سلامت</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش لیست کارها -->
+        <div id="todo-section" class="content-section">
+            <div class="section-header">
+                <div class="section-title">📝 لیست کارها</div>
+                <button class="back-btn">بازگشت</button>
+            </div>
+            
+            <div class="todo-input-group">
+                <input type="text" class="todo-input" placeholder="کار جدید را وارد کنید..." id="todo-input">
+                <button class="add-btn" id="add-todo">افزودن</button>
+            </div>
+            
+            <div class="todo-list" id="todo-list">
+                <!-- آیتم‌های todo اینجا نمایش داده می‌شوند -->
+            </div>
+        </div>
+
+        <!-- بخش یادداشت‌ها -->
+        <div id="notes-section" class="content-section">
+            <div class="section-header">
+                <div class="section-title">📒 یادداشت‌ها</div>
+                <button class="back-btn">بازگشت</button>
+            </div>
+            
+            <div class="notes-grid" id="notes-grid">
+                <!-- کارت‌های یادداشت اینجا نمایش داده می‌شوند -->
+            </div>
+            
+            <button class="add-note-btn" id="add-note-btn">+</button>
+        </div>
+
+        <!-- بخش تبدیل واحد -->
+        <div id="converter-section" class="content-section">
+            <div class="section-header">
+                <div class="section-title">📊 تبدیل واحد</div>
+                <button class="back-btn">بازگشت</button>
+            </div>
+            
+            <div class="converter-group">
+                <div class="converter-row">
+                    <input type="number" class="converter-input" id="converter-input" value="1" min="0">
+                    <select class="converter-select" id="converter-from">
+                        <option value="cm">سانتی‌متر</option>
+                        <option value="m">متر</option>
+                        <option value="km">کیلومتر</option>
+                        <option value="inch">اینچ</option>
+                        <option value="ft">فوت</option>
+                    </select>
+                </div>
+                
+                <div class="converter-row">
+                    <div class="converter-result" id="converter-result">0</div>
+                    <select class="converter-select" id="converter-to">
+                        <option value="cm">سانتی‌متر</option>
+                        <option value="m">متر</option>
+                        <option value="km">کیلومتر</option>
+                        <option value="inch">اینچ</option>
+                        <option value="ft">فوت</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش محاسبه BMI -->
+        <div id="bmi-section" class="content-section">
+            <div class="section-header">
+                <div class="section-title">💪 محاسبه BMI</div>
+                <button class="back-btn">بازگشت</button>
+            </div>
+            
+            <div class="bmi-form">
+                <div class="form-group">
+                    <label class="form-label">قد (سانتی‌متر)</label>
+                    <input type="number" class="form-input" id="bmi-height" placeholder="مثال: 175" min="100" max="250">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">وزن (کیلوگرم)</label>
+                    <input type="number" class="form-input" id="bmi-weight" placeholder="مثال: 70" min="30" max="200">
+                </div>
+                
+                <button class="calculate-btn" id="calculate-bmi">محاسبه BMI</button>
+            </div>
+            
+            <div class="bmi-result" id="bmi-result" style="display: none;">
+                <div>شاخص توده بدنی شما:</div>
+                <div class="bmi-value" id="bmi-value">0</div>
+                <div class="bmi-category" id="bmi-category">-</div>
+                <div class="bmi-advice" id="bmi-advice">-</div>
+            </div>
+        </div>
+    </div>
+<!-- فوتر -->
+<div class="footer">
+    <button class="footer-btn active" data-page="main">
+        <span>🏠</span>
+        <span>اصلی</span>
+    </button>
+    <button class="footer-btn" data-page="todo">
+        <span>📝</span>
+        <span>کارها</span>
+    </button>
+    <button class="footer-btn" data-page="notes">
+        <span>📒</span>
+        <span>یادداشت</span>
+    </button>
+    <button class="footer-btn" data-page="converter">
+        <span>📊</span>
+        <span>واحدها</span>
+    </button>
+    <button class="footer-btn" data-page="bmi">
+        <span>💪</span>
+        <span>BMI</span>
+    </button>
+</div>
+
+<script>
+    // Initialize Telegram Web App
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.ready();
+
+    // State management
+    const appState = {
+        currentPage: 'main',
+        todos: [],
+        notes: [],
+        darkMode: false
+    };
+
+    // DOM Elements
+    const elements = {
+        mainPage: document.getElementById('main-page'),
+        todoSection: document.getElementById('todo-section'),
+        notesSection: document.getElementById('notes-section'),
+        converterSection: document.getElementById('converter-section'),
+        bmiSection: document.getElementById('bmi-section'),
+        todoInput: document.getElementById('todo-input'),
+        addTodo: document.getElementById('add-todo'),
+        todoList: document.getElementById('todo-list'),
+        notesGrid: document.getElementById('notes-grid'),
+        addNoteBtn: document.getElementById('add-note-btn'),
+        converterInput: document.getElementById('converter-input'),
+        converterFrom: document.getElementById('converter-from'),
+        converterTo: document.getElementById('converter-to'),
+        converterResult: document.getElementById('converter-result'),
+        bmiHeight: document.getElementById('bmi-height'),
+        bmiWeight: document.getElementById('bmi-weight'),
+        calculateBmi: document.getElementById('calculate-bmi'),
+        bmiResult: document.getElementById('bmi-result'),
+        bmiValue: document.getElementById('bmi-value'),
+        bmiCategory: document.getElementById('bmi-category'),
+        bmiAdvice: document.getElementById('bmi-advice'),
+        featureCards: document.querySelectorAll('.feature-card'),
+        backBtns: document.querySelectorAll('.back-btn'),
+        footerBtns: document.querySelectorAll('.footer-btn')
+    };
+
+    // Initialize App
+    function initApp() {
+        loadData();
+        setupEventListeners();
+        updateUI();
+        setupConverter();
+    }
+
+    // Setup Event Listeners
+    function setupEventListeners() {
+        // Feature cards
+        elements.featureCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const feature = card.getAttribute('data-feature');
+                showSection(feature);
+            });
+        });
+
+        // Back buttons
+        elements.backBtns.forEach(btn => {
+            btn.addEventListener('click', showMainPage);
+        });
+
+        // Footer buttons
+        elements.footerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = btn.getAttribute('data-page');
+                if (page === 'main') {
+                    showMainPage();
+                } else {
+                    showSection(page);
+                }
+            });
+        });
+
+        // Todo functionality
+        elements.addTodo.addEventListener('click', addTodo);
+        elements.todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        // Notes functionality
+        elements.addNoteBtn.addEventListener('click', addNewNote);
+
+        // Converter functionality
+        elements.converterInput.addEventListener('input', updateConversion);
+        elements.converterFrom.addEventListener('change', updateConversion);
+        elements.converterTo.addEventListener('change', updateConversion);
+
+        // BMI functionality
+        elements.calculateBmi.addEventListener('click', calculateBMI);
+    }
+
+    // Navigation functions
+    function showMainPage() {
+        appState.currentPage = 'main';
+        updateUI();
+    }
+
+    function showSection(section) {
+        appState.currentPage = section;
+        updateUI();
+    }
+
+    // Update UI based on current state
+    function updateUI() {
+        // Hide all sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        elements.mainPage.style.display = 'none';
+
+        // Show current section
+        switch(appState.currentPage) {
+            case 'main':
+                elements.mainPage.style.display = 'block';
+                break;
+            case 'todo':
+                elements.todoSection.classList.add('active');
+                renderTodos();
+                break;
+            case 'notes':
+                elements.notesSection.classList.add('active');
+                renderNotes();
+                break;
+            case 'converter':
+                elements.converterSection.classList.add('active');
+                break;
+            case 'bmi':
+                elements.bmiSection.classList.add('active');
+                break;
+        }
+
+        // Update footer buttons
+        elements.footerBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-page') === appState.currentPage) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    // Todo List functionality
+    function addTodo() {
+        const text = elements.todoInput.value.trim();
+        if (!text) return;
+
+        const todo = {
+            id: Date.now(),
+            text: text,
+            completed: false,
+            createdAt: new Date().toISOString()
+        };
+
+        appState.todos.unshift(todo);
+        elements.todoInput.value = '';
+        renderTodos();
+        saveData();
+    }
+
+    function toggleTodo(id) {
+        const todo = appState.todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            renderTodos();
+            saveData();
+        }
+    }
+
+    function deleteTodo(id) {
+        appState.todos = appState.todos.filter(t => t.id !== id);
+        renderTodos();
+        saveData();
+    }
+
+    function renderTodos() {
+        if (appState.todos.length === 0) {
+            elements.todoList.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">📝</div>
+                    <p>هنوز کاری اضافه نکرده‌اید</p>
+                </div>
+            `;
+            return;
+        }
+
+        elements.todoList.innerHTML = appState.todos.map(todo => `
+            <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                       onchange="toggleTodo(${todo.id})">
+                <div class="todo-text">${todo.text}</div>
+                <div class="todo-actions">
+                    <button class="delete-btn" onclick="deleteTodo(${todo.id})">حذف</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Notes functionality
+    function addNewNote() {
+        const noteText = prompt('یادداشت جدید خود را وارد کنید:');
+        if (noteText && noteText.trim()) {
+            const note = {
+                id: Date.now(),
+                text: noteText.trim(),
+                createdAt: new Date().toISOString()
+            };
+            appState.notes.unshift(note);
+            renderNotes();
+            saveData();
+        }
+    }
+
+    function renderNotes() {
+        if (appState.notes.length === 0) {
+            elements.notesGrid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="icon">📒</div>
+                    <p>هنوز یادداشتی ندارید</p>
+                </div>
+            `;
+            return;
+        }
+
+        elements.notesGrid.innerHTML = appState.notes.map(note => `
+            <div class="note-card" onclick="editNote(${note.id})">
+                <div class="note-content">${note.text}</div>
+            </div>
+        `).join('');
+    }
+
+    function editNote(id) {
+        const note = appState.notes.find(n => n.id === id);
+        if (note) {
+            const newText = prompt('ویرایش یادداشت:', note.text);
+            if (newText !== null) {
+                note.text = newText.trim();
+                renderNotes();
+                saveData();
+            }
+        }
+    }
+
+    // Unit Converter functionality
+    function setupConverter() {
+        updateConversion();
+    }
+
+    function updateConversion() {
+        const value = parseFloat(elements.converterInput.value) || 0;
+        const fromUnit = elements.converterFrom.value;
+        const toUnit = elements.converterTo.value;
+        
+        // Convert to meters first (base unit)
+        let valueInMeters = value;
+        switch(fromUnit) {
+            case 'cm': valueInMeters = value / 100; break;
+            case 'km': valueInMeters = value * 1000; break;
+            case 'inch': valueInMeters = value * 0.0254; break;
+            case 'ft': valueInMeters = value * 0.3048; break;
+        }
+        
+        // Convert from meters to target unit
+        let result = valueInMeters;
+        switch(toUnit) {
+            case 'cm': result = valueInMeters * 100; break;
+            case 'km': result = valueInMeters / 1000; break;
+            case 'inch': result = valueInMeters / 0.0254; break;
+            case 'ft': result = valueInMeters / 0.3048; break;
+        }
+        
+        elements.converterResult.textContent = result.toFixed(2);
+    }
+
+    // BMI Calculator functionality
+    function calculateBMI() {
+        const height = parseFloat(elements.bmiHeight.value);
+        const weight = parseFloat(elements.bmiWeight.value);
+        
+        if (!height || !weight || height < 100 || weight < 30) {
+            alert('لطفا مقادیر معتبر وارد کنید');
+            return;
+        }
+        
+        const heightInMeters = height / 100;
+        const bmi = weight / (heightInMeters * heightInMeters);
+        
+        elements.bmiValue.textContent = bmi.toFixed(1);
+        
+        let category, advice;
+        if (bmi < 18.5) {
+            category = 'کمبود وزن';
+            advice = 'بهتر است با یک متخصص تغذیه مشورت کنید';
+        } else if (bmi < 25) {
+            category = 'وزن طبیعی';
+            advice = 'عالی! وزن شما در محدوده سالم است';
+        } else if (bmi < 30) {
+            category = 'اضافه وزن';
+            advice = 'ورزش منظم و رژیم غذایی سالم توصیه می‌شود';
+        } else {
+            category = 'چاقی';
+            advice = 'مشاوره با پزشک و تغییر سبک زندگی توصیه می‌شود';
+        }
+        
+        elements.bmiCategory.textContent = category;
+        elements.bmiAdvice.textContent = advice;
+        elements.bmiResult.style.display = 'block';
+    }
+
+    // Data persistence
+    function saveData() {
+        const data = {
+            todos: appState.todos,
+            notes: appState.notes
+        };
+        localStorage.setItem('multiFeatureApp', JSON.stringify(data));
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('multiFeatureApp');
+        if (saved) {
+            const data = JSON.parse(saved);
+            appState.todos = data.todos || [];
+            appState.notes = data.notes || [];
+        }
+    }
+
+    // Make functions global for HTML onclick
+    window.toggleTodo = toggleTodo;
+    window.deleteTodo = deleteTodo;
+    window.editNote = editNote;
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', initApp);
+
+    // Telegram Main Button
+    tg.MainButton.setText('مینی اپ فعال').show();
+    tg.MainButton.onClick(() => {
+        showMainPage();
+    });
+</script>
+</body>
+</html>
