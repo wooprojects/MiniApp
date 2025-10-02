@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>امپراتوری رزها - بازی استراتژی</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- هدر بازی -->
+        <header class="header">
+            <h1>🌹 امپراتوری رزها</h1>
+            <div class="player-info">
+                <span id="player-name">امپراتور</span>
+                <span id="player-level">سطح ۱</span>
+            </div>
+        </header>
+
+        <!-- نوار آمار -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">طلای</div>
+                <div id="gold-value" class="stat-value">۱۰۰</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">غذا</div>
+                <div id="food-value" class="stat-value">۵۰</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">سرباز</div>
+                <div id="soldiers-value" class="stat-value">۱۰</div>
+            </div>
+        </div>
+
+        <!-- نقشه بازی -->
+        <div class="game-map" id="game-map">
+            <!-- نقشه توسط JavaScript پر می‌شود -->
+        </div>
+
+        <!-- شبکه اقدامات -->
+        <div class="actions-grid">
+            <button class="action-btn" data-action="collect-tax">💰 جمع‌آوری مالیات</button>
+            <button class="action-btn" data-action="train-soldiers">⚔ آموزش سربازان</button>
+            <button class="action-btn" data-action="build-farm">🌾 ساخت مزرعه</button>
+            <button class="action-btn" data-action="build-mine">⛏ ساخت معدن</button>
+            <button class="action-btn" data-action="diplomacy">🤝 دیپلماسی</button>
+            <button class="action-btn" data-action="attack">🔥 حمله</button>
+        </div>
+
+        <!-- پنل اطلاعات -->
+        <div class="info-panel">
+            <h3>📊 گزارش امپراتوری</h3>
+            <div id="game-log" class="game-log">
+                <div class="log-entry">خوش آمدید، امپراتور! امپراتوری خود را بسازید...</div>
+            </div>
+        </div>
+
+        <!-- منوی پایین -->
+        <nav class="bottom-nav">
+            <button class="nav-btn" data-tab="empire">🏛 امپراتوری</button>
+            <button class="nav-btn" data-tab="military">⚔ نظامی</button>
+            <button class="nav-btn" data-tab="research">🔬 پژوهش</button>
+            <button class="nav-btn" data-tab="diplomacy">🌍 دیپلماسی</button>
+        </nav>
+    </div>
+
+    <!-- مودال برای ساخت و ساز -->
+    <div id="build-modal" class="modal">
+        <div class="modal-content">
+            <h3>🏗 ساخت ساختمان جدید</h3>
+            <div class="build-options">
+                <div class="build-option" data-building="farm">
+                    <div class="building-icon">🌾</div>
+                    <div class="building-info">
+                        <div class="building-name">مزرعه</div>
+                        <div class="building-cost">هزینه: ۲۰ طلا</div>
+                        <div class="building-benefit">مزیت: +۵ غذا/دور</div>
+                    </div>
+                </div>
+                <div class="build-option" data-building="mine">
+                    <div class="building-icon">⛏</div>
+                    <div class="building-info">
+                        <div class="building-name">معدن</div>
+                        <div class="building-cost">هزینه: ۳۰ طلا</div>
+                        <div class="building-benefit">مزیت: +۱۰ طلا/دور</div>
+                    </div>
+                </div>
+                <div class="build-option" data-building="barracks">
+                    <div class="building-icon">⚔</div>
+                    <div class="building-info">
+                        <div class="building-name">پادگان</div>
+                        <div class="building-cost">هزینه: ۵۰ طلا</div>
+                        <div class="building-benefit">مزیت: +۵ سرباز/دور</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="confirm-build" class="btn-primary">تأیید ساخت</button>
+                <button id="cancel-build" class="btn-secondary">انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
